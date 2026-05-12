@@ -15,7 +15,11 @@ try:
     class bdist_wheel(_bdist_wheel):
         def finalize_options(self):
             super().finalize_options()
-            self.root_is_pure = not sys.platform.startswith("win")
+            # intheon: we bundle the native liblsl shared library into
+            # pylsl/lib/, so the wheel is platform-specific on every OS even
+            # though pylsl itself ships no compiled extension. Force a binary
+            # wheel so the platform tag (and dist-info layout) reflect that.
+            self.root_is_pure = False
 
         def get_tag(self):
             python, abi, plat = _bdist_wheel.get_tag(self)
